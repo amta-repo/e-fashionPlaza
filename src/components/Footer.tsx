@@ -8,7 +8,7 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <h3 className="text-lg font-bold mb-4 bg-gradient-hero bg-clip-text text-transparent">
-              AMTECH-BJ
+              E-Fashion Plaza
             </h3>
             <p className="text-sm text-muted-foreground mb-4">
               Votre boutique de confiance pour des chaussures et vêtements de qualité au Bénin.
@@ -57,7 +57,7 @@ export const Footer = () => {
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="h-4 w-4 flex-shrink-0" />
-                <span>contact@amtech-bj.com</span>
+                <span>contact@e-fashionplaza.com</span>
               </li>
             </ul>
             
@@ -73,7 +73,7 @@ export const Footer = () => {
         </div>
 
         <div className="border-t mt-8 pt-6 text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} AMTECH-BJ. Tous droits réservés.</p>
+          <p>&copy; {new Date().getFullYear()} E-Fashion Plaza. Tous droits réservés.</p>
         </div>
       </div>
     </footer>

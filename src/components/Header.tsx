@@ -45,7 +45,7 @@ export const Header = () => {
 
           <Link to="/" className="flex items-center gap-2">
             <span className="text-2xl font-bold bg-gradient-hero bg-clip-text text-transparent">
-              AMTECH-BJ
+              E-Fashion Plaza
             </span>
           </Link>
 

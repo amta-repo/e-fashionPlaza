@@ -10,6 +10,11 @@ import timberlandLoafers from "@/assets/products/timberland-loafers.jpeg";
 import navyBoots from "@/assets/products/navy-boots.jpeg";
 import lecoqSneakers from "@/assets/products/lecoq-sneakers.jpeg";
 import timberlandSandals from "@/assets/products/timberland-sandals.jpeg";
+import blackLoafers from "@/assets/products/black-loafers.jpeg";
+import brownLeatherShoe from "@/assets/products/brown-leather-shoe.jpeg";
+import comfortSneakers from "@/assets/products/comfort-sneakers.jpeg";
+import crocodileSkinLoafers from "@/assets/products/crocodile-skin-loafers.jpeg";
+import palmSlippers from "@/assets/products/palm-slippers.jpeg";
 
 const Chaussures = () => {
   const [activeFilter, setActiveFilter] = useState("tous");
@@ -56,6 +61,62 @@ const Chaussures = () => {
       image: timberlandSandals,
       rating: 4,
       reviewCount: 10,
+      inStock: true,
+      category: "homme",
+    },
+    {
+      id: "5",
+      name: "Mocassins Noirs Classiques - Élégance Professionnelle",
+      price: 48000,
+      originalPrice: 58000,
+      image: blackLoafers,
+      rating: 5,
+      reviewCount: 18,
+      inStock: true,
+      discount: 17,
+      category: "homme",
+    },
+    {
+      id: "6",
+      name: "Chaussures en Cuir Marron - Style Affaires",
+      price: 52000,
+      image: brownLeatherShoe,
+      rating: 5,
+      reviewCount: 14,
+      inStock: true,
+      category: "homme",
+    },
+    {
+      id: "7",
+      name: "Baskets Confort - Usage Quotidien",
+      price: 39000,
+      originalPrice: 46000,
+      image: comfortSneakers,
+      rating: 4,
+      reviewCount: 20,
+      inStock: true,
+      discount: 15,
+      category: "homme",
+    },
+    {
+      id: "8",
+      name: "Mocassins Peau Crocodile - Luxe Premium",
+      price: 65000,
+      originalPrice: 78000,
+      image: crocodileSkinLoafers,
+      rating: 5,
+      reviewCount: 9,
+      inStock: true,
+      discount: 17,
+      category: "homme",
+    },
+    {
+      id: "9",
+      name: "Sandales Palm - Confort Été",
+      price: 32000,
+      image: palmSlippers,
+      rating: 4,
+      reviewCount: 16,
       inStock: true,
       category: "homme",
     },

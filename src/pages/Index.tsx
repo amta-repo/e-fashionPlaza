@@ -2,6 +2,7 @@ import { Header } from "@/components/Header";
 import { PromoBanner } from "@/components/PromoBanner";
 import { Footer } from "@/components/Footer";
 import { ProductCard } from "@/components/ProductCard";
+import { HeroSlider } from "@/components/HeroSlider";
 import { Button } from "@/components/ui/button";
 import { Shield, Truck, CreditCard, HeadphonesIcon } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -11,6 +12,11 @@ import timberlandLoafers from "@/assets/products/timberland-loafers.jpeg";
 import navyBoots from "@/assets/products/navy-boots.jpeg";
 import lecoqSneakers from "@/assets/products/lecoq-sneakers.jpeg";
 import timberlandSandals from "@/assets/products/timberland-sandals.jpeg";
+import blackLoafers from "@/assets/products/black-loafers.jpeg";
+import brownLeatherShoe from "@/assets/products/brown-leather-shoe.jpeg";
+import comfortSneakers from "@/assets/products/comfort-sneakers.jpeg";
+import crocodileSkinLoafers from "@/assets/products/crocodile-skin-loafers.jpeg";
+import palmSlippers from "@/assets/products/palm-slippers.jpeg";
 
 const Index = () => {
   const featuredProducts = [
@@ -54,6 +60,48 @@ const Index = () => {
       reviewCount: 10,
       inStock: true,
     },
+    {
+      id: "5",
+      name: "Mocassins Noirs Classiques - Élégance Professionnelle",
+      price: 48000,
+      originalPrice: 58000,
+      image: blackLoafers,
+      rating: 5,
+      reviewCount: 18,
+      inStock: true,
+      discount: 17,
+    },
+    {
+      id: "6",
+      name: "Chaussures en Cuir Marron - Style Affaires",
+      price: 52000,
+      image: brownLeatherShoe,
+      rating: 5,
+      reviewCount: 14,
+      inStock: true,
+    },
+    {
+      id: "7",
+      name: "Baskets Confort - Usage Quotidien",
+      price: 39000,
+      originalPrice: 46000,
+      image: comfortSneakers,
+      rating: 4,
+      reviewCount: 20,
+      inStock: true,
+      discount: 15,
+    },
+    {
+      id: "8",
+      name: "Mocassins Peau Crocodile - Luxe Premium",
+      price: 65000,
+      originalPrice: 78000,
+      image: crocodileSkinLoafers,
+      rating: 5,
+      reviewCount: 9,
+      inStock: true,
+      discount: 17,
+    },
   ];
 
   const features = [
@@ -86,8 +134,9 @@ const Index = () => {
       
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative bg-gradient-hero text-primary-foreground py-20 md:py-32">
-          <div className="container px-4">
+        <section className="relative text-primary-foreground py-20 md:py-32 overflow-hidden">
+          <HeroSlider />
+          <div className="container px-4 relative z-10">
             <div className="max-w-3xl animate-fade-in">
               <h1 className="text-4xl md:text-6xl font-bold mb-6">
                 La Mode à Votre Portée
