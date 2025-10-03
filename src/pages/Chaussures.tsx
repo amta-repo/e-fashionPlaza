@@ -15,6 +15,11 @@ import brownLeatherShoe from "@/assets/products/brown-leather-shoe.jpeg";
 import comfortSneakers from "@/assets/products/comfort-sneakers.jpeg";
 import crocodileSkinLoafers from "@/assets/products/crocodile-skin-loafers.jpeg";
 import palmSlippers from "@/assets/products/palm-slippers.jpeg";
+import timberlandAnkleSneakers from "@/assets/products/timberland-ankle-sneakers.jpeg";
+import timberlandBeigeSneakers from "@/assets/products/timberland-beige-sneakers.jpeg";
+import nikeSbColorful from "@/assets/products/nike-sb-colorful.jpeg";
+import reebokWhiteSneakers from "@/assets/products/reebok-white-sneakers.jpeg";
+import lacostelBlackSneakers from "@/assets/products/lacoste-black-sneakers.jpeg";
 
 const Chaussures = () => {
   const [activeFilter, setActiveFilter] = useState("tous");
@@ -118,6 +123,62 @@ const Chaussures = () => {
       rating: 4,
       reviewCount: 16,
       inStock: true,
+      category: "homme",
+    },
+    {
+      id: "10",
+      name: "Timberland Montantes Navy - Style Urbain",
+      price: 58000,
+      originalPrice: 68000,
+      image: timberlandAnkleSneakers,
+      rating: 5,
+      reviewCount: 11,
+      inStock: true,
+      discount: 15,
+      category: "homme",
+    },
+    {
+      id: "11",
+      name: "Baskets Timberland Bicolores - Design Moderne",
+      price: 47000,
+      image: timberlandBeigeSneakers,
+      rating: 4,
+      reviewCount: 13,
+      inStock: true,
+      category: "homme",
+    },
+    {
+      id: "12",
+      name: "Nike SB Dunk Édition Colorée - Collection Exclusive",
+      price: 62000,
+      originalPrice: 75000,
+      image: nikeSbColorful,
+      rating: 5,
+      reviewCount: 22,
+      inStock: true,
+      discount: 17,
+      category: "homme",
+    },
+    {
+      id: "13",
+      name: "Reebok Classic Blanches - Style Intemporel",
+      price: 41000,
+      image: reebokWhiteSneakers,
+      rating: 4,
+      reviewCount: 19,
+      inStock: true,
+      category: "homme",
+    },
+    {
+      id: "14",
+      name: "Lacoste Sport Noires - Élégance Sportive",
+      price: 54000,
+      originalPrice: 64000,
+      image: lacostelBlackSneakers,
+      rating: 5,
+      reviewCount: 17,
+      inStock: true,
+      discount: 16,
       category: "homme",
     },
   ];
