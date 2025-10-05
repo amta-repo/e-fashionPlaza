@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
+import { CartProvider } from "./contexts/CartContext";
 
 // Google Translate initialization
 declare global {
@@ -20,4 +21,8 @@ window.googleTranslateElementInit = function() {
   );
 };
 
-createRoot(document.getElementById("root")!).render(<App />);
+createRoot(document.getElementById("root")!).render(
+  <CartProvider>
+    <App />
+  </CartProvider>
+);

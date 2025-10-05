@@ -9,6 +9,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Shield, Smartphone } from "lucide-react";
 import { useState } from "react";
+import mtnLogo from "@/assets/logos/mtn-logo.png";
+import moovLogo from "@/assets/logos/moov-logo.png";
+import celtiisLogo from "@/assets/logos/celtiis-logo.png";
 
 const Checkout = () => {
   const [paymentMethod, setPaymentMethod] = useState("momo");
@@ -90,26 +93,23 @@ const Checkout = () => {
                   <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod}>
                     <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted cursor-pointer">
                       <RadioGroupItem value="momo" id="momo" />
-                      <Label htmlFor="momo" className="flex items-center gap-2 cursor-pointer flex-1">
-                        <Smartphone className="h-5 w-5" />
-                        <span className="font-medium">MTN Mobile Money</span>
+                      <Label htmlFor="momo" className="flex items-center gap-3 cursor-pointer flex-1">
+                        <img src={mtnLogo} alt="MTN MoMo" className="h-8 w-auto object-contain" />
                         <Badge className="ml-auto bg-trust">Populaire</Badge>
                       </Label>
                     </div>
 
                     <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted cursor-pointer">
                       <RadioGroupItem value="moov" id="moov" />
-                      <Label htmlFor="moov" className="flex items-center gap-2 cursor-pointer flex-1">
-                        <Smartphone className="h-5 w-5" />
-                        <span className="font-medium">Moov Money</span>
+                      <Label htmlFor="moov" className="flex items-center gap-3 cursor-pointer flex-1">
+                        <img src={moovLogo} alt="Moov Money" className="h-8 w-auto object-contain" />
                       </Label>
                     </div>
 
                     <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted cursor-pointer">
                       <RadioGroupItem value="celtiis" id="celtiis" />
-                      <Label htmlFor="celtiis" className="flex items-center gap-2 cursor-pointer flex-1">
-                        <Smartphone className="h-5 w-5" />
-                        <span className="font-medium">Celtiis Money</span>
+                      <Label htmlFor="celtiis" className="flex items-center gap-3 cursor-pointer flex-1">
+                        <img src={celtiisLogo} alt="Celtiis Money" className="h-8 w-auto object-contain" />
                       </Label>
                     </div>
                   </RadioGroup>

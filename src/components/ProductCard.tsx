@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
+import { useCart } from "@/contexts/CartContext";
 
 interface ProductCardProps {
   id: string;
@@ -27,6 +28,12 @@ export const ProductCard = ({
   inStock,
   discount,
 }: ProductCardProps) => {
+  const { addToCart } = useCart();
+
+  const handleAddToCart = () => {
+    addToCart({ id, name, price, image });
+  };
+
   return (
     <Card className="group overflow-hidden hover:shadow-medium transition-all duration-300">
       <Link to={`/produit/${id}`}>
@@ -84,6 +91,7 @@ export const ProductCard = ({
           className="w-full" 
           disabled={!inStock}
           variant="default"
+          onClick={handleAddToCart}
         >
           <ShoppingCart className="h-4 w-4 mr-2" />
           Ajouter au panier

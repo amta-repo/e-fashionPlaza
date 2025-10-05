@@ -1,5 +1,8 @@
 import { Facebook, Instagram, Mail, MapPin, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
+import mtnLogo from "@/assets/logos/mtn-logo.png";
+import moovLogo from "@/assets/logos/moov-logo.png";
+import celtiisLogo from "@/assets/logos/celtiis-logo.png";
 
 export const Footer = () => {
   return (
@@ -63,10 +66,10 @@ export const Footer = () => {
             
             <div className="mt-6">
               <p className="text-xs font-semibold mb-2">Paiement sécurisé</p>
-              <div className="flex gap-2 flex-wrap">
-                <div className="bg-trust text-trust-foreground px-3 py-1 rounded text-xs font-medium">MTN MoMo</div>
-                <div className="bg-trust text-trust-foreground px-3 py-1 rounded text-xs font-medium">Moov</div>
-                <div className="bg-trust text-trust-foreground px-3 py-1 rounded text-xs font-medium">Celtiis</div>
+              <div className="flex gap-3 flex-wrap items-center">
+                <img src={mtnLogo} alt="MTN Mobile Money" className="h-6 w-auto object-contain" />
+                <img src={moovLogo} alt="Moov Money" className="h-6 w-auto object-contain" />
+                <img src={celtiisLogo} alt="Celtiis Money" className="h-6 w-auto object-contain" />
               </div>
             </div>
           </div>

@@ -4,6 +4,7 @@ import { Footer } from "@/components/Footer";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Blog = () => {
   const articles = [
@@ -51,30 +52,32 @@ const Blog = () => {
         <div className="container px-4 py-12">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {articles.map((article) => (
-              <Card key={article.id} className="overflow-hidden hover:shadow-medium transition-all">
-                <div className="aspect-video overflow-hidden bg-muted">
-                  <img
-                    src={article.image}
-                    alt={article.title}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
-                <CardHeader>
-                  <div className="flex items-center gap-2 mb-2">
-                    <Badge variant="secondary">{article.category}</Badge>
-                    <span className="flex items-center gap-1 text-sm text-muted-foreground">
-                      <Calendar className="h-3 w-3" />
-                      {article.date}
-                    </span>
+              <Link key={article.id} to={`/blog/${article.id}`}>
+                <Card className="overflow-hidden hover:shadow-medium transition-all h-full">
+                  <div className="aspect-video overflow-hidden bg-muted">
+                    <img
+                      src={article.image}
+                      alt={article.title}
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                    />
                   </div>
-                  <h2 className="text-xl font-bold hover:text-primary transition-colors cursor-pointer">
-                    {article.title}
-                  </h2>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">{article.excerpt}</p>
-                </CardContent>
-              </Card>
+                  <CardHeader>
+                    <div className="flex items-center gap-2 mb-2">
+                      <Badge variant="secondary">{article.category}</Badge>
+                      <span className="flex items-center gap-1 text-sm text-muted-foreground">
+                        <Calendar className="h-3 w-3" />
+                        {article.date}
+                      </span>
+                    </div>
+                    <h2 className="text-xl font-bold hover:text-primary transition-colors cursor-pointer">
+                      {article.title}
+                    </h2>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">{article.excerpt}</p>
+                  </CardContent>
+                </Card>
+              </Link>
             ))}
           </div>
         </div>
