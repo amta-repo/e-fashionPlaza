@@ -14,16 +14,258 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      chat_messages: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean | null
+          message: string
+          sender: string
+          session_id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          message: string
+          sender?: string
+          session_id: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          sender?: string
+          session_id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      order_items: {
+        Row: {
+          created_at: string
+          id: string
+          order_id: string
+          price: number
+          product_id: string
+          quantity: number
+          size: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_id: string
+          price: number
+          product_id: string
+          quantity?: number
+          size?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_id?: string
+          price?: number
+          product_id?: string
+          quantity?: number
+          size?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          contact_method: string | null
+          created_at: string
+          delivery_fee: number | null
+          email: string | null
+          id: string
+          payment_method: string | null
+          payment_reference: string | null
+          phone: string | null
+          shipping_address: string | null
+          shipping_city: string | null
+          status: string
+          total_amount: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          contact_method?: string | null
+          created_at?: string
+          delivery_fee?: number | null
+          email?: string | null
+          id?: string
+          payment_method?: string | null
+          payment_reference?: string | null
+          phone?: string | null
+          shipping_address?: string | null
+          shipping_city?: string | null
+          status?: string
+          total_amount: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          contact_method?: string | null
+          created_at?: string
+          delivery_fee?: number | null
+          email?: string | null
+          id?: string
+          payment_method?: string | null
+          payment_reference?: string | null
+          phone?: string | null
+          shipping_address?: string | null
+          shipping_city?: string | null
+          status?: string
+          total_amount?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      products: {
+        Row: {
+          category: string
+          colors: string[] | null
+          created_at: string
+          description: string | null
+          discount: number | null
+          id: string
+          image_url: string | null
+          in_stock: boolean
+          name: string
+          original_price: number | null
+          price: number
+          rating: number | null
+          review_count: number | null
+          sizes: string[] | null
+          subcategory: string | null
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          colors?: string[] | null
+          created_at?: string
+          description?: string | null
+          discount?: number | null
+          id?: string
+          image_url?: string | null
+          in_stock?: boolean
+          name: string
+          original_price?: number | null
+          price: number
+          rating?: number | null
+          review_count?: number | null
+          sizes?: string[] | null
+          subcategory?: string | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          colors?: string[] | null
+          created_at?: string
+          description?: string | null
+          discount?: number | null
+          id?: string
+          image_url?: string | null
+          in_stock?: boolean
+          name?: string
+          original_price?: number | null
+          price?: number
+          rating?: number | null
+          review_count?: number | null
+          sizes?: string[] | null
+          subcategory?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          address: string | null
+          avatar_url: string | null
+          city: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          phone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address?: string | null
+          avatar_url?: string | null
+          city?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string | null
+          avatar_url?: string | null
+          city?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "moderator" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +392,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "moderator", "user"],
+    },
   },
 } as const
