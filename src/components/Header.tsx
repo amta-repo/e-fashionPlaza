@@ -1,13 +1,15 @@
-import { ShoppingCart, Search, Menu, User } from "lucide-react";
+import { ShoppingCart, Search, Menu, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const Header = () => {
-  const [cartCount] = useState(0);
+  const { totalItems } = useCart();
+  const { user, signOut, isAdmin } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -39,6 +41,11 @@ export const Header = () => {
                 <Link to="/devenir-vendeur" className="text-lg font-medium hover:text-primary transition-colors">
                   Devenir Vendeur
                 </Link>
+                {isAdmin && (
+                  <Link to="/admin" className="text-lg font-medium text-primary hover:text-primary/80 transition-colors">
+                    Admin
+                  </Link>
+                )}
               </nav>
             </SheetContent>
           </Sheet>
@@ -62,6 +69,11 @@ export const Header = () => {
             <Link to="/blog" className="text-sm font-medium hover:text-primary transition-colors">
               Blog
             </Link>
+            {isAdmin && (
+              <Link to="/admin" className="text-sm font-medium text-primary hover:text-primary/80 transition-colors">
+                Admin
+              </Link>
+            )}
           </nav>
         </div>
 
@@ -77,24 +89,30 @@ export const Header = () => {
             </Button>
           </div>
 
-          <Button size="icon" variant="ghost" asChild>
-            <Link to="/compte">
-              <User className="h-5 w-5" />
-            </Link>
-          </Button>
+          {user ? (
+            <Button size="icon" variant="ghost" onClick={signOut} title="Déconnexion">
+              <LogOut className="h-5 w-5" />
+            </Button>
+          ) : (
+            <Button size="icon" variant="ghost" asChild>
+              <Link to="/compte">
+                <User className="h-5 w-5" />
+              </Link>
+            </Button>
+          )}
 
           <Button size="icon" variant="ghost" className="relative" asChild>
             <Link to="/panier">
               <ShoppingCart className="h-5 w-5" />
-              {cartCount > 0 && (
-                <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-primary">
-                  {cartCount}
+              {totalItems > 0 && (
+                <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-primary text-xs">
+                  {totalItems}
                 </Badge>
               )}
             </Link>
           </Button>
 
-          <div id="google_translate_element" className="hidden lg:block"></div>
+          <div id="google_translate_element" className="hidden lg:block [&_.goog-te-gadget]:!text-xs [&_select]:!z-40"></div>
         </div>
       </div>
     </header>

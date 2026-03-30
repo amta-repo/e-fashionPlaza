@@ -7,29 +7,85 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Shield, Smartphone } from "lucide-react";
-import { useState } from "react";
-import mtnLogo from "@/assets/logos/mtn-logo.png";
-import moovLogo from "@/assets/logos/moov-logo.png";
-import celtiisLogo from "@/assets/logos/celtiis-logo.png";
+import { Shield, Trash2, Plus, Minus } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
+
+declare global {
+  interface Window {
+    openKkiapayWidget: (config: any) => void;
+    addKkiapayListener: (event: string, callback: (data: any) => void) => void;
+    removeKkiapayListener: (event: string, callback: (data: any) => void) => void;
+  }
+}
 
 const Checkout = () => {
-  const [paymentMethod, setPaymentMethod] = useState("momo");
+  const { items, totalPrice, totalItems, removeFromCart, updateQuantity, clearCart } = useCart();
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [contactMethod, setContactMethod] = useState("whatsapp");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [kkiapayLoaded, setKkiapayLoaded] = useState(false);
 
-  const cartItems = [
-    {
-      id: "1",
-      name: "Mocassins Burberry Premium",
-      price: 45000,
-      quantity: 1,
-    },
-  ];
+  const deliveryFee = totalItems > 1 ? 0 : 2000;
+  const total = totalPrice + deliveryFee;
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const freeDelivery = cartItems.length > 1;
-  const deliveryFee = freeDelivery ? 0 : 2000;
-  const total = subtotal + deliveryFee;
+  // Load KKiapay script
+  useEffect(() => {
+    if (document.getElementById("kkiapay-script")) {
+      setKkiapayLoaded(true);
+      return;
+    }
+    const script = document.createElement("script");
+    script.id = "kkiapay-script";
+    script.src = "https://cdn.kkiapay.me/k.js";
+    script.async = true;
+    script.onload = () => setKkiapayLoaded(true);
+    document.body.appendChild(script);
+  }, []);
+
+  const handlePayment = () => {
+    if (!phone || !address || !city) {
+      toast({ title: "Erreur", description: "Veuillez remplir tous les champs obligatoires", variant: "destructive" });
+      return;
+    }
+    if (items.length === 0) {
+      toast({ title: "Panier vide", description: "Ajoutez des produits avant de payer", variant: "destructive" });
+      return;
+    }
+    if (!kkiapayLoaded || !window.openKkiapayWidget) {
+      toast({ title: "Erreur", description: "Le système de paiement n'est pas encore chargé. Réessayez.", variant: "destructive" });
+      return;
+    }
+
+    // Open KKiapay widget - replace YOUR_PUBLIC_KEY with actual key
+    window.openKkiapayWidget({
+      amount: total,
+      position: "center",
+      callback: "",
+      data: "",
+      theme: "#E8662A",
+      key: "YOUR_KKIAPAY_PUBLIC_KEY",
+    });
+
+    const onSuccess = (response: any) => {
+      toast({ title: "Paiement réussi ! 🎉", description: `Référence: ${response.transactionId}` });
+      clearCart();
+      window.removeKkiapayListener("success", onSuccess);
+    };
+
+    const onFailed = () => {
+      toast({ title: "Paiement échoué", description: "Veuillez réessayer", variant: "destructive" });
+      window.removeKkiapayListener("failed", onFailed);
+    };
+
+    window.addKkiapayListener("success", onSuccess);
+    window.addKkiapayListener("failed", onFailed);
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -40,168 +96,148 @@ const Checkout = () => {
         <div className="container px-4 py-8">
           <h1 className="text-3xl font-bold mb-8">Paiement</h1>
 
-          <div className="grid lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-6">
-              {/* Customer Information */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Informations de livraison</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid md:grid-cols-2 gap-4">
+          {items.length === 0 ? (
+            <Card className="text-center py-16">
+              <CardContent>
+                <p className="text-xl text-muted-foreground mb-4">Votre panier est vide</p>
+                <Button asChild><a href="/chaussures">Continuer vos achats</a></Button>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2 space-y-6">
+                {/* Cart Items */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Votre panier ({totalItems} article{totalItems > 1 ? "s" : ""})</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {items.map((item) => (
+                      <div key={item.id} className="flex items-center gap-4 p-3 border rounded-lg">
+                        <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded" />
+                        <div className="flex-1">
+                          <h4 className="font-medium text-sm">{item.name}</h4>
+                          <p className="text-sm font-bold">{item.price.toLocaleString()} FCFA</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button size="icon" variant="outline" className="h-7 w-7" onClick={() => updateQuantity(item.id, item.quantity - 1)}>
+                            <Minus className="h-3 w-3" />
+                          </Button>
+                          <span className="w-6 text-center text-sm">{item.quantity}</span>
+                          <Button size="icon" variant="outline" className="h-7 w-7" onClick={() => updateQuantity(item.id, item.quantity + 1)}>
+                            <Plus className="h-3 w-3" />
+                          </Button>
+                        </div>
+                        <Button size="icon" variant="ghost" onClick={() => removeFromCart(item.id)}>
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+
+                {/* Customer Information */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Informations de livraison</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
                     <div>
-                      <Label htmlFor="firstName">Prénom</Label>
-                      <Input id="firstName" placeholder="Jean" required />
+                      <Label htmlFor="phone">Téléphone (WhatsApp)</Label>
+                      <Input id="phone" type="tel" placeholder="+229 XX XX XX XX" value={phone} onChange={(e) => setPhone(e.target.value)} required />
                     </div>
                     <div>
-                      <Label htmlFor="lastName">Nom</Label>
-                      <Input id="lastName" placeholder="Dupont" required />
+                      <Label htmlFor="address">Adresse de livraison</Label>
+                      <Input id="address" placeholder="Adresse complète" value={address} onChange={(e) => setAddress(e.target.value)} required />
                     </div>
-                  </div>
+                    <div>
+                      <Label htmlFor="city">Ville / Département</Label>
+                      <Input id="city" placeholder="Ex: Cotonou, Littoral" value={city} onChange={(e) => setCity(e.target.value)} required />
+                    </div>
+                  </CardContent>
+                </Card>
 
-                  <div>
-                    <Label htmlFor="phone">Téléphone (WhatsApp)</Label>
-                    <Input id="phone" type="tel" placeholder="+229 XX XX XX XX" required />
-                  </div>
+                {/* Confirmation Method */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Recevoir la confirmation par</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <RadioGroup value={contactMethod} onValueChange={setContactMethod}>
+                      <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted cursor-pointer">
+                        <RadioGroupItem value="whatsapp" id="whatsapp" />
+                        <Label htmlFor="whatsapp" className="cursor-pointer flex-1">
+                          WhatsApp <Badge className="ml-2 bg-green-500">Recommandé</Badge>
+                        </Label>
+                      </div>
+                      <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted cursor-pointer">
+                        <RadioGroupItem value="sms" id="sms" />
+                        <Label htmlFor="sms" className="cursor-pointer flex-1">SMS</Label>
+                      </div>
+                    </RadioGroup>
+                  </CardContent>
+                </Card>
+              </div>
 
-                  <div>
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="email@exemple.com" required />
-                  </div>
+              {/* Order Summary */}
+              <div>
+                <Card className="sticky top-20">
+                  <CardHeader>
+                    <CardTitle>Résumé de la commande</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {items.map((item) => (
+                      <div key={item.id} className="flex justify-between text-sm">
+                        <span>{item.name} x{item.quantity}</span>
+                        <span className="font-medium">{(item.price * item.quantity).toLocaleString()} FCFA</span>
+                      </div>
+                    ))}
 
-                  <div>
-                    <Label htmlFor="address">Adresse de livraison</Label>
-                    <Input id="address" placeholder="Adresse complète" required />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="city">Ville / Département</Label>
-                    <Input id="city" placeholder="Ex: Cotonou, Littoral" required />
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Payment Method */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Shield className="h-5 w-5 text-trust" />
-                    Mode de paiement sécurisé
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod}>
-                    <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted cursor-pointer">
-                      <RadioGroupItem value="momo" id="momo" />
-                      <Label htmlFor="momo" className="flex items-center gap-3 cursor-pointer flex-1">
-                        <img src={mtnLogo} alt="MTN MoMo" className="h-8 w-auto object-contain" />
-                        <Badge className="ml-auto bg-trust">Populaire</Badge>
-                      </Label>
+                    <div className="border-t pt-4 space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>Sous-total</span>
+                        <span>{totalPrice.toLocaleString()} FCFA</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>Livraison</span>
+                        {deliveryFee === 0 ? (
+                          <span className="text-green-600 font-medium">GRATUIT</span>
+                        ) : (
+                          <span>{deliveryFee.toLocaleString()} FCFA</span>
+                        )}
+                      </div>
                     </div>
 
-                    <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted cursor-pointer">
-                      <RadioGroupItem value="moov" id="moov" />
-                      <Label htmlFor="moov" className="flex items-center gap-3 cursor-pointer flex-1">
-                        <img src={moovLogo} alt="Moov Money" className="h-8 w-auto object-contain" />
-                      </Label>
+                    {deliveryFee === 0 && (
+                      <div className="bg-green-50 dark:bg-green-950 p-3 rounded-lg text-sm text-green-700 dark:text-green-400">
+                        🎉 Livraison gratuite appliquée !
+                      </div>
+                    )}
+
+                    <div className="border-t pt-4">
+                      <div className="flex justify-between font-bold text-lg">
+                        <span>Total</span>
+                        <span>{total.toLocaleString()} FCFA</span>
+                      </div>
                     </div>
 
-                    <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted cursor-pointer">
-                      <RadioGroupItem value="celtiis" id="celtiis" />
-                      <Label htmlFor="celtiis" className="flex items-center gap-3 cursor-pointer flex-1">
-                        <img src={celtiisLogo} alt="Celtiis Money" className="h-8 w-auto object-contain" />
-                      </Label>
-                    </div>
-                  </RadioGroup>
+                    <Button className="w-full" size="lg" onClick={handlePayment}>
+                      Payer avec KKiapay
+                    </Button>
 
-                  <div className="mt-4">
-                    <Label htmlFor="momoNumber">Numéro Mobile Money</Label>
-                    <Input id="momoNumber" type="tel" placeholder="+229 XX XX XX XX" required />
-                  </div>
-                </CardContent>
-              </Card>
+                    <p className="text-xs text-center text-muted-foreground">
+                      MTN MoMo • Moov Money • Mastercard • Visa
+                    </p>
 
-              {/* Order Confirmation Method */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Recevoir la confirmation par</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <RadioGroup value={contactMethod} onValueChange={setContactMethod}>
-                    <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted cursor-pointer">
-                      <RadioGroupItem value="whatsapp" id="whatsapp" />
-                      <Label htmlFor="whatsapp" className="cursor-pointer flex-1">
-                        WhatsApp
-                        <Badge className="ml-2 bg-green-500">Recommandé</Badge>
-                      </Label>
+                    <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground pt-2">
+                      <Shield className="h-4 w-4 text-trust" />
+                      <span>Paiement 100% sécurisé via KKiapay</span>
                     </div>
-                    <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted cursor-pointer">
-                      <RadioGroupItem value="sms" id="sms" />
-                      <Label htmlFor="sms" className="cursor-pointer flex-1">SMS</Label>
-                    </div>
-                    <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted cursor-pointer">
-                      <RadioGroupItem value="email" id="email-method" />
-                      <Label htmlFor="email-method" className="cursor-pointer flex-1">Email</Label>
-                    </div>
-                  </RadioGroup>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
-
-            {/* Order Summary */}
-            <div>
-              <Card className="sticky top-20">
-                <CardHeader>
-                  <CardTitle>Résumé de la commande</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {cartItems.map((item) => (
-                    <div key={item.id} className="flex justify-between text-sm">
-                      <span>{item.name} x{item.quantity}</span>
-                      <span className="font-medium">{item.price.toLocaleString()} FCFA</span>
-                    </div>
-                  ))}
-
-                  <div className="border-t pt-4 space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Sous-total</span>
-                      <span>{subtotal.toLocaleString()} FCFA</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>Livraison</span>
-                      {freeDelivery ? (
-                        <span className="text-green-600 font-medium">GRATUIT</span>
-                      ) : (
-                        <span>{deliveryFee.toLocaleString()} FCFA</span>
-                      )}
-                    </div>
-                  </div>
-
-                  {freeDelivery && (
-                    <div className="bg-green-50 dark:bg-green-950 p-3 rounded-lg text-sm text-green-700 dark:text-green-400">
-                      🎉 Livraison gratuite appliquée !
-                    </div>
-                  )}
-
-                  <div className="border-t pt-4">
-                    <div className="flex justify-between font-bold text-lg">
-                      <span>Total</span>
-                      <span>{total.toLocaleString()} FCFA</span>
-                    </div>
-                  </div>
-
-                  <Button className="w-full" size="lg">
-                    Confirmer la commande
-                  </Button>
-
-                  <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground pt-2">
-                    <Shield className="h-4 w-4 text-trust" />
-                    <span>Paiement 100% sécurisé</span>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
+          )}
         </div>
       </main>
 
