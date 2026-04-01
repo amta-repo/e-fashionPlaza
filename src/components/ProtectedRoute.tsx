@@ -27,14 +27,15 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 export const AdminRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, loading, isAdmin, signIn } = useAuth();
+  const { user, loading, isAdmin, adminChecked, signIn } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const { toast } = useToast();
 
-  if (loading) {
+  // Show spinner while auth or admin check is loading
+  if (loading || (user && !adminChecked)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
@@ -55,7 +56,6 @@ export const AdminRoute = ({ children }: { children: React.ReactNode }) => {
     if (error) {
       toast({ title: "Erreur de connexion", description: error.message, variant: "destructive" });
     } else {
-      // Auth state change will re-render and check isAdmin
       toast({ title: "Connexion réussie", description: "Vérification des droits admin..." });
     }
     setSubmitting(false);

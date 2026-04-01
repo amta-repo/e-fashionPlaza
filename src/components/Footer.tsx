@@ -56,7 +56,7 @@ export const Footer = () => {
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="h-4 w-4 flex-shrink-0" />
-                <span>+229 XX XX XX XX</span>
+                <a href="https://wa.me/22901911346" className="hover:text-primary transition-colors">+229 01 91 13 46 72</a>
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="h-4 w-4 flex-shrink-0" />

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -10,6 +10,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   isAdmin: boolean;
+  adminChecked: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -19,14 +20,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [adminChecked, setAdminChecked] = useState(false);
 
-  const checkAdminRole = async (userId: string) => {
+  const checkAdminRole = useCallback(async (userId: string) => {
+    setAdminChecked(false);
     const { data } = await supabase.rpc("has_role", {
       _user_id: userId,
       _role: "admin",
     });
     setIsAdmin(!!data);
-  };
+    setAdminChecked(true);
+  }, []);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -37,6 +41,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setTimeout(() => checkAdminRole(session.user.id), 0);
         } else {
           setIsAdmin(false);
+          setAdminChecked(true);
         }
         setLoading(false);
       }
@@ -47,12 +52,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(session?.user ?? null);
       if (session?.user) {
         checkAdminRole(session.user.id);
+      } else {
+        setAdminChecked(true);
       }
       setLoading(false);
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [checkAdminRole]);
 
   const signUp = async (email: string, password: string, fullName: string) => {
     const { error } = await supabase.auth.signUp({
@@ -76,7 +83,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, signUp, signIn, signOut, isAdmin }}>
+    <AuthContext.Provider value={{ user, session, loading, signUp, signIn, signOut, isAdmin, adminChecked }}>
       {children}
     </AuthContext.Provider>
   );

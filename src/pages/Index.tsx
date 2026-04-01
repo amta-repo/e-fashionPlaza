@@ -3,10 +3,73 @@ import { PromoBanner } from "@/components/PromoBanner";
 import { Footer } from "@/components/Footer";
 import { ProductCard } from "@/components/ProductCard";
 import { HeroSlider } from "@/components/HeroSlider";
+import { SEOHead } from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Shield, Truck, CreditCard, HeadphonesIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { allProducts } from "@/data/products";
+
+const BASE_URL = "https://efashionplaza.com";
+
+const jsonLdData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "E-Fashion Plaza",
+    url: BASE_URL,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${BASE_URL}/recherche?q={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "E-Fashion Plaza",
+    url: BASE_URL,
+    logo: `${BASE_URL}/favicon.png`,
+    description: "Boutique en ligne de chaussures, vêtements et cosmétiques de qualité au Bénin avec livraison gratuite et paiement Mobile Money.",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Cotonou",
+      addressCountry: "BJ",
+    },
+    contactPoint: {
+      "@type": "ContactPoint",
+      telephone: "+22901911346 72",
+      contactType: "customer service",
+      availableLanguage: ["French", "English"],
+    },
+    sameAs: [
+      "https://facebook.com/efashionplaza",
+      "https://instagram.com/efashionplaza",
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Store",
+    name: "E-Fashion Plaza",
+    url: BASE_URL,
+    image: `${BASE_URL}/og-image.jpg`,
+    description: "Chaussures, vêtements et cosmétiques de marque au Bénin. Livraison gratuite. Paiement Mobile Money sécurisé.",
+    priceRange: "15000-50000 FCFA",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Cotonou",
+      addressRegion: "Littoral",
+      addressCountry: "BJ",
+    },
+    paymentAccepted: "Mobile Money, Mastercard, Visa",
+    currenciesAccepted: "XOF",
+    openingHoursSpecification: {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      opens: "00:00",
+      closes: "23:59",
+    },
+  },
+];
 
 const Index = () => {
   const featuredProducts = allProducts.slice(0, 8);
@@ -20,6 +83,13 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <SEOHead
+        title="E-Fashion Plaza | Chaussures & Vêtements au Bénin"
+        description="Achetez chaussures, vêtements et cosmétiques de marque au Bénin. Livraison gratuite Cotonou. Paiement Mobile Money sécurisé."
+        canonical={BASE_URL}
+        keywords="chaussures Bénin, vêtements Bénin, cosmétiques Bénin, mode Cotonou, achat en ligne Bénin, Mobile Money, livraison gratuite"
+        jsonLd={jsonLdData}
+      />
       <PromoBanner />
       <Header />
       
