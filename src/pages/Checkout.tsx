@@ -69,7 +69,7 @@ const Checkout = () => {
       callback: "",
       data: "",
       theme: "#E8662A",
-      key: "YOUR_KKIAPAY_PUBLIC_KEY",
+      key: "54ca6b202dad11f1bb44c16610bd7bf7",
     });
 
     const onSuccess = (response: any) => {
