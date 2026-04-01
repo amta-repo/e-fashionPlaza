@@ -16,7 +16,7 @@ const FAQ_RESPONSES: Record<string, string> = {
   retour: "🔄 Vous pouvez retourner un article sous 7 jours s'il est dans son état d'origine. Contactez-nous via WhatsApp pour initier un retour.",
   taille: "📏 Nos chaussures sont disponibles du 39 au 45. Consultez le guide des tailles sur chaque fiche produit. En cas de doute, prenez une taille au-dessus.",
   commande: "📦 Vous pouvez suivre votre commande en vous connectant à votre compte. Vous recevrez aussi des mises à jour par WhatsApp.",
-  contact: "📞 Contactez-nous via WhatsApp au +229 XX XX XX XX ou par email à contact@e-fashionplaza.com. Notre équipe répond sous 2h.",
+  contact: "📞 Contactez-nous via WhatsApp au +229 91 13 46 72 ou par email à contact@e-fashionplaza.com. Tapez 'agent' pour parler à un humain.",
 };
 
 const WELCOME_MESSAGE: Message = {
