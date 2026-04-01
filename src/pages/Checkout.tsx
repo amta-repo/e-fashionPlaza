@@ -69,6 +69,7 @@ const Checkout = () => {
       callback: "",
       data: "",
       theme: "#E8662A",
+      sandbox: true,
       key: "54ca6b202dad11f1bb44c16610bd7bf7",
     });
 
