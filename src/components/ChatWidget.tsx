@@ -47,8 +47,9 @@ export const ChatWidget = () => {
     if (lower.includes("merci")) {
       return "Avec plaisir ! N'hésitez pas si vous avez d'autres questions. 😊";
     }
-    if (lower.includes("agent") || lower.includes("humain") || lower.includes("live")) {
-      return "🧑‍💼 Je transfère votre demande à un agent. Un membre de notre équipe vous contactera sous peu via WhatsApp. En attendant, puis-je vous aider avec autre chose ?";
+    if (lower.includes("agent") || lower.includes("humain") || lower.includes("live") || lower.includes("whatsapp")) {
+      window.open("https://wa.me/22991134672?text=Bonjour%2C%20j%27ai%20besoin%20d%27aide%20sur%20E-Fashion%20Plaza", "_blank");
+      return "🧑‍💼 Vous allez être redirigé vers notre service client sur WhatsApp. Si la fenêtre ne s'ouvre pas, cliquez ici : https://wa.me/22991134672";
     }
     return "Je ne suis pas sûr de comprendre. Essayez de me poser une question sur : livraison, paiement, retour, taille, commande ou contact. Vous pouvez aussi demander à parler à un agent humain.";
   };
